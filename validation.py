@@ -1,6 +1,9 @@
 from datetime import datetime
 
 
+# ამოწმებს მომხმარებლის მიერ შეყვანილ თანხას.
+# თანხა უნდა იყოს რიცხვი და ნულზე მეტი.
+# არასწორი მონაცემის შემთხვევაში შეყვანა მეორდება.
 def read_amount(message="შეიყვანეთ თანხა: "):
     while True:
         try:
@@ -15,6 +18,8 @@ def read_amount(message="შეიყვანეთ თანხა: "):
             print("შეიყვანეთ სწორი რიცხვი.")
 
 
+# ამოწმებს ტექსტურ მონაცემს, მაგალითად კატეგორიის სახელს.
+# strip() აშორებს ზედმეტ გამოტოვებებს და ცარიელ ტექსტს არ იღებს.
 def read_text(message):
     while True:
         text = input(message).strip()
@@ -25,6 +30,8 @@ def read_text(message):
         print("ველი არ უნდა იყოს ცარიელი.")
 
 
+# ამოწმებს, რომ შეყვანილი მნიშვნელობა იყოს მთელი რიცხვი
+# და მოთავსდეს minimum და maximum საზღვრებს შორის.
 def read_number(message, minimum, maximum):
     while True:
         try:
@@ -39,6 +46,9 @@ def read_number(message, minimum, maximum):
             print("შეიყვანეთ მთელი რიცხვი.")
 
 
+# ამოწმებს თარიღს ფორმატით დღე.თვე.წელი.
+# სწორ თარიღს გარდაქმნის ფორმატში წელი-თვე-დღე,
+# რათა პროგრამაში ყველა თარიღი ერთნაირად შეინახოს.
 def read_date():
     while True:
         date = input("შეიყვანეთ თარიღი (დღე.თვე.წელი): ")
@@ -51,6 +61,8 @@ def read_date():
             print("თარიღის არასწორი ფორმატი.")
 
 
+# ამოწმებს მომხმარებლის მიერ შეყვანილ თვესა და წელს.
+# strptime ამოწმებს ფორმატს, strftime კი აბრუნებს თვე.წელი ფორმატს.
 def read_month():
     while True:
         month = input("შეიყვანეთ თვე (თვე.წელი): ")
@@ -63,22 +75,8 @@ def read_month():
             print("თვე არასწორად არის მითითებული.")
 
 
-def read_type():
-    while True:
-        print("1. შემოსავალი")
-        print("2. გასავალი")
-
-        choice = input("აირჩიეთ ტიპი: ")
-
-        if choice == "1":
-            return "income"
-
-        elif choice == "2":
-            return "expense"
-
-        print("არასწორი არჩევანი.")
-
-
+# ტრანზაქციის ინგლისურ ტიპს გარდაქმნის ქართულ დასახელებად.
+# გამოიყენება მომხმარებლისთვის ინფორმაციის ქართულად საჩვენებლად.
 def type_name(transaction_type):
     if transaction_type == "income":
         return "შემოსავალი"
@@ -89,6 +87,9 @@ def type_name(transaction_type):
     return transaction_type
 
 
+# შენახულ თარიღს წელი-თვე-დღე ფორმატიდან
+# გარდაქმნის დღე.თვე.წელი ფორმატში ეკრანზე გამოსატანად.
+# თუ გარდაქმნა ვერ მოხერხდა, აბრუნებს საწყის მნიშვნელობას.
 def normalize_date(date):
     try:
         valid_date = datetime.strptime(date, "%Y-%m-%d")

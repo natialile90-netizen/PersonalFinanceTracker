@@ -1,27 +1,32 @@
 from datetime import datetime
 from finance_manager import FinanceManager
-from validation import read_amount, read_text, read_number, read_date, read_month, read_type, type_name, normalize_date
+from validation import read_amount, read_text, read_number, read_date, read_month, type_name, normalize_date
 
 
+# ეკრანის გასუფთავება
 def clear_screen():
     print("\n" * 40)
 
 
+# Enter-ის დაჭერამდე პროგრამის შეჩერება
 def pause():
     input("\nდააჭირეთ Enter-ს მთავარ მენიუში დასაბრუნებლად...")
 
 
+# სათაურის გამოტანა გამყოფი ხაზებით
 def heading(title):
     print("=" * 48)
     print(title)
     print("=" * 48)
 
 
+# ყველა არჩეული ტრანზაქციის ჩვენება
 def show_transactions(transactions):
     if not transactions:
         print("ტრანზაქციები ვერ მოიძებნა.")
         return
 
+    # ჩანაწერების დანომვრა 1-დან
     for number, transaction in enumerate(transactions, start=1):
         print("-" * 40)
         print("ნომერი:", number)
@@ -32,6 +37,7 @@ def show_transactions(transactions):
         print("კომენტარი:", transaction.comment)
 
 
+# შემოსავლის, გასავლისა და ბალანსის ჩვენება
 def show_summary(manager, transactions=None):
     income, expense, balance = manager.summary(transactions)
     print("შემოსავალი:", income, "ლარი")
@@ -39,6 +45,7 @@ def show_summary(manager, transactions=None):
     print("ბალანსი:", balance, "ლარი")
 
 
+# კატეგორიის თვიური ლიმიტის შემოწმება
 def show_budget_warning(manager, category):
     limit = manager.budget_for(category)
 
@@ -59,6 +66,7 @@ def show_budget_warning(manager, category):
               round(limit - spent, 2), "ლარი")
 
 
+# ახალი შემოსავლის ან გასავლის დამატება
 def add_transaction(manager, transaction_type):
     heading("ტრანზაქციის დამატება")
 
@@ -76,32 +84,27 @@ def add_transaction(manager, transaction_type):
         print("ტრანზაქცია ვერ შეინახა.")
 
 
+# ტრანზაქციების გაფილტვრა კატეგორიით ან თარიღით
 def filter_menu(manager):
     heading("ტრანზაქციების გაფილტვრა")
 
     print("1. კატეგორიით")
     print("2. თარიღით")
-    print("3. ტიპით")
 
-    choice = read_number("აირჩიეთ: ", 1, 3)
+    choice = read_number("აირჩიეთ: ", 1, 2)
 
     if choice == 1:
         category = read_text("კატეგორია: ")
         result = manager.filter_transactions(category=category)
 
-    elif choice == 2:
+    else:
         date = read_date()
         result = manager.filter_transactions(date=date)
-
-    else:
-        transaction_type = read_type()
-        result = manager.filter_transactions(
-            transaction_type=transaction_type
-        )
 
     show_transactions(result)
 
 
+# არსებული ტრანზაქციის რედაქტირება
 def edit_transaction(manager):
     heading("ტრანზაქციის რედაქტირება")
     show_transactions(manager.transactions)
@@ -115,6 +118,7 @@ def edit_transaction(manager):
         len(manager.transactions)
     )
 
+    # სიის ინდექსი იწყება 0-დან, ამიტომ ნომერს ვაკლებთ 1-ს
     old = manager.transactions[number - 1]
 
     print("ახალი მონაცემები (ტიპი და თარიღი უცვლელი დარჩება)")
@@ -132,6 +136,7 @@ def edit_transaction(manager):
         print("ცვლილება ვერ შეინახა.")
 
 
+# ტრანზაქციის წაშლა მომხმარებლის დადასტურებით
 def delete_transaction(manager):
     heading("ტრანზაქციის წაშლა")
     show_transactions(manager.transactions)
@@ -158,6 +163,7 @@ def delete_transaction(manager):
         print("წაშლა გაუქმდა.")
 
 
+# კატეგორიის თვიური ლიმიტის დაყენება
 def budget_menu(manager):
     heading("კატეგორიის თვიური ლიმიტი")
 
@@ -171,6 +177,7 @@ def budget_menu(manager):
         print("ლიმიტი ვერ შეინახა.")
 
 
+# ყველა კატეგორიის ლიმიტისა და ხარჯის ჩვენება
 def show_budgets(manager):
     heading("კატეგორიების თვიური ლიმიტები")
 
@@ -196,6 +203,7 @@ def show_budgets(manager):
                   round(limit - spent, 2), "ლარი")
 
 
+# არჩეული თვის შემოსავლის, გასავლისა და ბალანსის ჩვენება
 def monthly_summary(manager):
     heading("თვიური შეჯამება")
 
@@ -203,6 +211,7 @@ def monthly_summary(manager):
     show_summary(manager, manager.monthly_transactions(month))
 
 
+# კატეგორიების მიხედვით შემოსავლისა და გასავლის შეჯამება
 def category_summary(manager):
     heading("კატეგორიების მიხედვით შეჯამება")
 
@@ -220,6 +229,7 @@ def category_summary(manager):
               round(amounts["expense"], 2), "ლარი")
 
 
+# მთავარი მენიუს ჩვენება
 def show_menu():
     heading("პირადი ფინანსების მართვის სისტემა")
 
@@ -237,14 +247,17 @@ def show_menu():
     print("0. პროგრამიდან გასვლა")
 
 
+# პროგრამის მთავარი ფუნქცია — მენიუსა და მოქმედებების მართვა
 def main():
     try:
         manager = FinanceManager()
 
+    # მონაცემების ჩატვირთვისას შეცდომის დამუშავება
     except (ValueError, KeyError, TypeError, OSError) as error:
         print("მონაცემების ჩატვირთვა ვერ მოხერხდა:", error)
         return
 
+    # მენიუ მეორდება, სანამ მომხმარებელი 0-ს არ აირჩევს
     while True:
         clear_screen()
         show_menu()
@@ -295,5 +308,6 @@ def main():
         pause()
 
 
+# პროგრამის გაშვება, როდესაც main.py პირდაპირ სრულდება
 if __name__ == "__main__":
     main()

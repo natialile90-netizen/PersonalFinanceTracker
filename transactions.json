@@ -68,5 +68,19 @@
         "transaction_type": "expense",
         "date": "2026-11-14",
         "comment": "სტეპის გადასახადი"
+    },
+    {
+        "amount": 350.0,
+        "category": "საკვები",
+        "transaction_type": "expense",
+        "date": "2026-11-18",
+        "comment": "მაღაზია"
+    },
+    {
+        "amount": 380.0,
+        "category": "სურსათი",
+        "transaction_type": "expense",
+        "date": "2026-11-18",
+        "comment": "გუდვილი1"
     }
 ]

@@ -8,7 +8,13 @@ from storage import (
 )
 
 
+# FinanceManager კლასი მართავს ტრანზაქციებსა და ბიუჯეტებს.
+# აქ ხდება მონაცემების დამატება, წაშლა, შეცვლა, ძებნა და შეჯამება.
+
 class FinanceManager:
+
+    # კონსტრუქტორი ქმნის ტრანზაქციების სიას და ტვირთავს შენახულ მონაცემებს.
+    # JSON-დან მიღებული მონაცემებით იქმნება Transaction ობიექტები.
     def __init__(self):
         self.transactions = []
         self.budgets = load_budgets()
@@ -26,6 +32,8 @@ class FinanceManager:
 
             self.transactions.append(transaction)
 
+    # ქმნის ახალ ტრანზაქციას და ინახავს ფაილში.
+    # თუ შენახვა ვერ მოხერხდა, დამატებულ ჩანაწერს სიიდან შლის.
     def add_transaction(self, amount, category, transaction_type, comment=""):
         transaction = Transaction(
             amount,
@@ -42,6 +50,8 @@ class FinanceManager:
         self.transactions.pop()
         return False
 
+    # ყველა Transaction ობიექტს ლექსიკონად გარდაქმნის.
+    # მიღებული სია გამოიყენება JSON ფაილში შესანახად.
     def get_transactions_data(self):
         result = []
 
@@ -50,6 +60,8 @@ class FinanceManager:
 
         return result
 
+    # შლის ტრანზაქციას მითითებული ინდექსით.
+    # თუ ფაილში შენახვა ვერ მოხერხდა, წაშლილ ჩანაწერს აბრუნებს.
     def delete_transaction(self, index):
         if 0 <= index < len(self.transactions):
             transaction = self.transactions.pop(index)
@@ -61,6 +73,8 @@ class FinanceManager:
 
         return False
 
+    # ცვლის ტრანზაქციის თანხას, კატეგორიასა და კომენტარს.
+    # წარუმატებელი შენახვის შემთხვევაში ძველ მონაცემებს აღადგენს.
     def update_transaction(self, index, amount, category, comment):
         if 0 <= index < len(self.transactions):
             transaction = self.transactions[index]
@@ -82,6 +96,8 @@ class FinanceManager:
 
         return False
 
+    # ფილტრავს ტრანზაქციებს კატეგორიის, თარიღის ან ტიპის მიხედვით.
+    # თუ რომელიმე პარამეტრი None-ია, მისი შემოწმება არ ხდება.
     def filter_transactions(self, category=None, date=None,
                             transaction_type=None):
         result = []
@@ -106,6 +122,8 @@ class FinanceManager:
 
         return result
 
+    # ითვლის მთლიან შემოსავალს, გასავალსა და ბალანსს.
+    # სურვილის შემთხვევაში შეუძლია მხოლოდ გადაცემული სიის შეჯამება.
     def summary(self, transactions=None):
         if transactions is None:
             transactions = self.transactions
@@ -126,6 +144,8 @@ class FinanceManager:
 
         return income, expense, balance
 
+    # ითვლის შემოსავალსა და გასავალს თითოეული კატეგორიისთვის.
+    # შედეგს აბრუნებს ლექსიკონის სახით.
     def category_summary(self):
         result = {}
 
@@ -146,6 +166,8 @@ class FinanceManager:
 
         return result
 
+    # აბრუნებს მხოლოდ მითითებული თვის ტრანზაქციებს.
+    # არასწორი თარიღის შემთხვევაში continue გადადის შემდეგ ჩანაწერზე.
     def monthly_transactions(self, month):
         result = []
 
@@ -165,6 +187,8 @@ class FinanceManager:
 
         return result
 
+    # ადგენს ან ცვლის კატეგორიის თვიურ ლიმიტს.
+    # თუ შენახვა ვერ მოხერხდა, აღადგენს ძველ ბიუჯეტებს.
     def set_budget(self, category, amount):
         old_budgets = self.budgets.copy()
 
@@ -176,6 +200,8 @@ class FinanceManager:
         self.budgets = old_budgets
         return False
 
+    # პოულობს მითითებული კატეგორიის ლიმიტს.
+    # კატეგორიის სახელის შედარებისას ასოების ზომას არ ითვალისწინებს.
     def budget_for(self, category):
         for name, limit in self.budgets.items():
             if name.lower() == category.lower():
@@ -183,6 +209,8 @@ class FinanceManager:
 
         return None
 
+    # ითვლის კონკრეტულ კატეგორიაში მითითებული თვის მთლიან გასავალს.
+    # შედეგს აბრუნებს ორ ათწილადამდე დამრგვალებულს.
     def category_expense_for_month(self, category, month):
         total = 0
 
